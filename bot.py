@@ -17,7 +17,7 @@ from telegram.ext import (
 )
 
 # ===== CONFIG =====
-TOKEN = "7569093582:AAHLdpabWHRhQL5QkVwA1I1pmxrntYypf6Q"
+TOKEN = "7820622392:AAGUuofuHiRT36gCxvdb9o-NQWnWlxGZhs4"
 
 TEAM_MEMBERS = ["Thanh Trúc", "Nhất Huy", "Phương Linh"]
 
