@@ -236,7 +236,7 @@ def format_msg(name, tasks):
 
         text += "\n"
 
-    text += f"⚠️ Nhắc nhở: Yêu cầu {name} làm việc đúng tiến độ và cập nhật trạng thái nhé 😌"
+    text += f"⚠️ Nhắc nhở: Yêu cầu {name} làm việc đúng tiến độ và cập nhật trạng thái vào sheet, nếu quên cập nhật thì sẽ bị cù lét và méc anh Triệu🔪🫰"
     return text.strip()
 
 
