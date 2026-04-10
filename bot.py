@@ -379,6 +379,22 @@ async def sendtoday_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def sendeveryday_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await enable_notify(update, context)
 
+async def pingteam_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_ids = load_file(CHAT_IDS_FILE)
+
+    text = (
+        "📣 Có cập nhật công việc mới trong sheet nha.\n"
+        "Mọi người vào bot bấm /sendtoday hoặc nút 📋 Xem việc hôm nay để xem task mới nhất."
+    )
+
+    for name, chat_id in chat_ids.items():
+        try:
+            await context.bot.send_message(chat_id=chat_id, text=text)
+        except Exception as e:
+            print(f"Lỗi ping {name}: {e}")
+
+    if update.message:
+        await update.message.reply_text("Đã ping toàn bộ team ✅")
 
 async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
@@ -449,6 +465,7 @@ def main():
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("sendtoday", sendtoday_cmd))
     app.add_handler(CommandHandler("sendeveryday", sendeveryday_cmd))
+    app.add_handler(CommandHandler("pingteam", pingteam_cmd))
     app.add_handler(CommandHandler("help", help_cmd))
 
     app.add_handler(MessageHandler(filters.Regex("^📋 Xem việc hôm nay$"), view_today))
