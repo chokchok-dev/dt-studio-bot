@@ -248,9 +248,9 @@ async def send_today_for_name(bot, name, chat_id):
     tasks = tasks_by_user.get(name, [])
     msg = format_msg(name, tasks)
     await bot.send_message(chat_id=chat_id, text=msg)
-    
-report = build_report_text(name, tasks)
-await bot.send_message(chat_id=chat_id, text=report)
+
+    report = build_report_text(name, tasks)
+    await bot.send_message(chat_id=chat_id, text=report)
 
 def build_report_text(name, tasks):
     from datetime import datetime
