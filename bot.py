@@ -249,7 +249,16 @@ async def send_today_for_name(bot, name, chat_id):
     msg = format_msg(name, tasks)
     await bot.send_message(chat_id=chat_id, text=msg)
 
+def build_report_text(name, tasks):
+    from datetime import datetime
+    today = datetime.now().strftime("%d/%m")
 
+    text = f"{name} Báo cáo {today}:\n"
+
+    for t in tasks:
+        text += f"- {t.get('phanloai', '')}\n"
+
+    return text
 # =========================
 # COMMANDS
 # =========================
