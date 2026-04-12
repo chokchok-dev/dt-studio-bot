@@ -256,12 +256,51 @@ def build_report_text(name, tasks):
     from datetime import datetime
     today = datetime.now().strftime("%d/%m")
 
-    text = f"{name} Báo cáo {today}:\n"
+    # mapping code → tên đầy đủ
+    mapping = {
+        "GĐ": "Gia đình",
+        "GD": "Gia đình",
+        "W": "Wedding",
+        "BT": "Beauty",
+        "BTCC": "Beauty",
+    }
+
+    dang_bai = set()
+    content = set()
+    quay = set()
+    baocao = set()
 
     for t in tasks:
-        text += f"- {t.get('phan_loai', '')}\n"
+        phan_loai = t.get("phan_loai", "").upper()
+        dang = t.get("dang", "").lower()
 
-    return text
+        # đổi tên
+        for key in mapping:
+            if key in phan_loai:
+                phan_loai = mapping[key]
+
+        # phân loại nhóm
+        if "post" in dang or "đăng" in dang:
+            dang_bai.add(phan_loai)
+        elif "kịch bản" in dang or "content" in dang:
+            content.add(phan_loai)
+        elif "quay" in dang or "video" in dang:
+            quay.add(phan_loai)
+        elif "kế hoạch" in dang or "báo cáo" in dang:
+            baocao.add(phan_loai)
+
+    text = f"{name} Báo cáo {today}:\n"
+
+    if dang_bai:
+        text += f"Đăng bài: {', '.join(dang_bai)}\n"
+    if content:
+        text += f"Content: {', '.join(content)}\n"
+    if quay:
+        text += f"Quay: {', '.join(quay)}\n"
+    if baocao:
+        text += f"Báo cáo: {', '.join(baocao)}\n"
+
+    return text.strip()
 # =========================
 # COMMANDS
 # =========================
