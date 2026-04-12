@@ -259,7 +259,7 @@ def build_report_text(name, tasks):
     text = f"{name} Báo cáo {today}:\n"
 
     for t in tasks:
-        text += f"- {t.get('phanloai', '')}\n"
+        text += f"- {t.get('phan_loai', '')}\n"
 
     return text
 # =========================
