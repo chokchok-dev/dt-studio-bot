@@ -252,42 +252,68 @@ async def send_today_for_name(bot, name, chat_id):
     report = build_report_text(name, tasks)
     await bot.send_message(chat_id=chat_id, text=report)
 
+def normalize_report_label(text):
+    raw = str(text).strip()
+    upper = raw.upper()
+
+    if upper in ["GĐ", "GD"]:
+        return "Gia đình"
+
+    if upper == "W":
+        return "Wedding"
+
+    if upper in ["BT", "BTCC"]:
+        return "Beauty"
+
+    if upper == "PROFILE":
+        return "Profile"
+
+    if upper == "NEWBORN":
+        return "Newborn"
+
+    if upper in ["ẢNH THẺ", "ANH THE"]:
+        return "Ảnh thẻ"
+
+    if upper in ["BẦU", "BAU"]:
+        return "Bầu"
+
+    return raw
+
+
 def build_report_text(name, tasks):
     from datetime import datetime
     today = datetime.now().strftime("%d/%m")
 
-    # mapping code → tên đầy đủ
-    mapping = {
-        "GĐ": "Gia đình",
-        "GD": "Gia đình",
-        "W": "Wedding",
-        "BT": "Beauty",
-        "BTCC": "Beauty",
-    }
-
-    dang_bai = set()
-    content = set()
-    quay = set()
-    baocao = set()
+    dang_bai = []
+    content = []
+    quay = []
+    edit = []
+    baocao = []
 
     for t in tasks:
-        phan_loai = t.get("phan_loai", "").upper()
-        dang = t.get("dang", "").lower()
+        phan_loai = normalize_report_label(t.get("phan_loai", ""))
+        dang = str(t.get("dang", "")).strip().lower()
+        task_name = str(t.get("task", "")).strip().lower()
 
-        # đổi tên
-        for key in mapping:
-            if key in phan_loai:
-                phan_loai = mapping[key]
-
-        # phân loại nhóm
         if "post" in dang or "đăng" in dang:
-            dang_bai.add(phan_loai)
-        elif "kịch bản" in dang or "content" in dang:
-            content.add(phan_loai)
-        elif "quay" in dang or "video" in dang:
-            quay.add(phan_loai)
-        elif "kế hoạch" in dang or "báo cáo" in dang:
-            baocao.add(phan_loai)
+            if phan_loai and phan_loai not in dang_bai:
+                dang_bai.append(phan_loai)
+
+        elif "edit" in dang or "edit" in task_name:
+            if phan_loai and phan_loai not in edit:
+                edit.append(phan_loai)
+
+        elif "quay" in dang or "quay" in task_name:
+            if phan_loai and phan_loai not in quay:
+                quay.append(phan_loai)
+
+        elif "kịch bản" in dang or "content" in dang or "kịch bản" in task_name or "content" in task_name:
+            if phan_loai and phan_loai not in content:
+                content.append(phan_loai)
+
+        elif "kế hoạch" in dang or "báo cáo" in dang or "báo cáo" in task_name:
+            if phan_loai and phan_loai not in baocao:
+                baocao.append(phan_loai)
 
     text = f"{name} Báo cáo {today}:\n"
 
@@ -297,6 +323,8 @@ def build_report_text(name, tasks):
         text += f"Content: {', '.join(content)}\n"
     if quay:
         text += f"Quay: {', '.join(quay)}\n"
+    if edit:
+        text += f"Edit: {', '.join(edit)}\n"
     if baocao:
         text += f"Báo cáo: {', '.join(baocao)}\n"
 
